@@ -10,9 +10,9 @@
 // Comments are ignored.
 
 RegExp.prototype.bexec = function(str) { //Creo que esta bien
-  var ultimoMatch = this.lastIndex();
+  var ultimoMatch = this.lastIndex;
   var match = this.exec(this);
-  if(ultimoMatch == match.index){ return match }
+  if(match && ultimoMatch == match.index){ return match }
   return null;
 }
 
@@ -23,14 +23,14 @@ String.prototype.tokens = function () {
     let m;                      // Matching
     let result = [];            // An array to hold the results.
     
-    const WHITES              = /\s+/;
-    const ID                  = /[a-zA-Z]\w*/;
-    const NUM                 = /\d+/;
-    const STRING              = /"(\\.|[^"])*"/;
-    const ONELINECOMMENT      = /\/\/.*/;
-    const MULTIPLELINECOMMENT = /\/\*(.|\n)*\/\*/;
-    const TWOCHAROPERATORS    = />=|<=|==|<>|!=|--|\+\+|&&|\|\||\+=|-=/;
-    const ONECHAROPERATORS    = /<|>|&|\||\+|-|\*|\/|=|!|\[|\]|{|}|\(|\)/; //Comprobar
+    const WHITES              = /\s+/g;
+    const ID                  = /[a-zA-Z_]\w*/g;
+    const NUM                 = /\d+/g;
+    const STRING              = /('(\\.|[^'])*'|"(\\.|[^"])*")/g;
+    const ONELINECOMMENT      = /\/\/.*/g;
+    const MULTIPLELINECOMMENT = /\/[*](.|\n)*?[*]\//g;
+    const TWOCHAROPERATORS    = />=|<=|==|<>|!=|--|\+\+|&&|\|\||\+=|-=/g;
+    const ONECHAROPERATORS    = /([-+*\/=()&|;:,<>{}[\]])/g; //Comprobar
     const tokens = [WHITES, ID, NUM, STRING, ONELINECOMMENT, 
                   MULTIPLELINECOMMENT, TWOCHAROPERATORS, ONECHAROPERATORS ];
 
@@ -64,7 +64,7 @@ String.prototype.tokens = function () {
            (m = MULTIPLELINECOMMENT.bexec(this))) { getTok(); }
         // name.
         else if (m = ID.bexec(this)) {
-            result.push(make('identifier', getTok())); //Esto también
+            result.push(make('name', getTok())); //Esto también
         } 
         // number.
         else if (m = NUM.bexec(this)) { //Esto también
